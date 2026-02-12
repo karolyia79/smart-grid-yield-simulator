@@ -12,10 +12,12 @@ async def async_setup_entry(hass, entry, async_add_entities):
         ElmeletiNyeresegSensor(coordinator, entry),
         PillanatnyiSebessegSensor(coordinator, entry),
         TozsdeiTanacsadoSensor(coordinator, entry),
-        SGYExchangeRateSensor(coordinator, entry)
+        SGYExchangeRateSensor(coordinator, entry),
+        # Új pénzügyi szenzorok a napi kWh adatok alapján
+        DailyImportCostSensor(coordinator, entry),
+        DailyExportRevenueSensor(coordinator, entry)
     ]
 
-    # Riemann-összeg (Összesített számláló)
     accumulator = IntegrationSensor(
         integration_method="left",
         name="osszesitett_megtakaritas_szamlalo",
@@ -25,7 +27,6 @@ async def async_setup_entry(hass, entry, async_add_entities):
         unit_time=UnitOfTime.HOURS,
     )
 
-    # Utility Meters (Napi, Havi, Évi)
     meters = [
         UtilityMeterSensor(cron_pattern=None, cycle="daily", name="napi_valos_nyereseg", 
                            source_entity="sensor.osszesitett_megtakaritas_szamlalo", unique_id=f"{entry.entry_id}_daily"),
@@ -53,6 +54,38 @@ class DinamikusArSensor(SensorEntity):
             if tozsde_eur > 0:
                 return round(((tozsde_eur * rate * 1.27) / 1000) + 25.0, 2)
         except: return None
+
+class DailyImportCostSensor(SensorEntity):
+    _attr_name = "Napi Hálózati Költség (Tőzsdei)"
+    _attr_native_unit_of_measurement = "Ft"
+    def __init__(self, coordinator, entry):
+        self.coordinator = coordinator
+        self._attr_unique_id = f"{entry.entry_id}_daily_imp_cost"
+    @property
+    def entity_id(self): return "sensor.napi_halozati_koltseg_tozsdei"
+    @property
+    def native_value(self):
+        try:
+            kwh = float(self.coordinator.data["daily_import"].state)
+            price = float(self.hass.states.get("sensor.dinamikus_brutto_aramar").state)
+            return round(kwh * price, 2)
+        except: return 0
+
+class DailyExportRevenueSensor(SensorEntity):
+    _attr_name = "Napi Hálózati Bevétel (Tőzsdei)"
+    _attr_native_unit_of_measurement = "Ft"
+    def __init__(self, coordinator, entry):
+        self.coordinator = coordinator
+        self._attr_unique_id = f"{entry.entry_id}_daily_exp_rev"
+    @property
+    def entity_id(self): return "sensor.napi_halozati_bevetel_tozsdei"
+    @property
+    def native_value(self):
+        try:
+            kwh = float(self.coordinator.data["daily_export"].state)
+            price = float(self.hass.states.get("sensor.dinamikus_brutto_aramar").state)
+            return round(kwh * price, 2)
+        except: return 0
 
 class ElmeletiNyeresegSensor(SensorEntity):
     _attr_name = "Elméleti Nyereség mértéke"
