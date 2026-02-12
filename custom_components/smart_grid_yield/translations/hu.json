@@ -1,14 +1,19 @@
 {
-  "title": "Okos Hálózat Megtakarítás Szimulátor",
-  "entity": {
-    "sensor": {
-      "sgy_advisor": { 
-        "name": "Tőzsdei tanácsadó"
-      },
-      "sgy_savings_rate": { "name": "Pillanatnyi spórolás üteme" },
-      "sgy_daily_savings": { "name": "Napi megtakarítás" },
-      "sgy_monthly_savings": { "name": "Havi megtakarítás" },
-      "sgy_yearly_savings": { "name": "Éves megtakarítás" }
+  "config": {
+    "step": {
+      "user": {
+        "title": "Smart Grid Yield Szimulátor Beállítás",
+        "description": "Kérlek, add meg a szimulátor beállításához szükséges adatokat. Győződj meg róla, hogy a Nord Pool integráció már telepítve van.",
+        "data": {
+          "fixer_api_key": "Fixer.io API Kulcs",
+          "spot_price_sensor": "Nord Pool Szenzor (EUR/MWh)",
+          "load_power_sensor": "Inverter Fogyasztás / Load (W)",
+          "grid_power_sensor": "Inverter Hálózati Teljesítmény / Grid (W)"
+        }
+      }
+    },
+    "abort": {
+      "missing_nordpool": "A Nord Pool integráció szükséges. Kérlek, telepítsd először HACS-ból."
     }
   }
 }
