@@ -4,48 +4,130 @@ Ez egy Home Assistant egyedi integráció, amelyet kifejezetten a magyarországi
 
 ## Főbb funkciók
 
-* **Valós Idejű Árkalkuláció:** Kiszámolja a bruttó piaci árat (Ft/kWh) a Nord Pool adatokból, a Fixer.io-ról származó EUR/HUF árfolyammal, 27% ÁFA-val és a 25 Ft/kWh Rendszerhasználati Díjjal (RHD).
-* **Pillanatnyi Megtakarítás:** Megmutatja (Ft/h egységben), hogy az aktuális fogyasztásod mennyibe kerülne a tőzsdén a rezsiárhoz képest.
-* **Napi Pénzügyi Mérleg (kWh alapon):** Az invertered által mért pontos napi import/export energia (kWh) alapján kiszámolja, mennyi lenne a mai napod tényleges költsége vagy bevétele tőzsdei elszámolásban.
-* **Tőzsdei Tanácsadó:** Szöveges javaslatot ad az akkumulátor és a fogyasztók vezérléséhez (pl. extrém olcsó árnál töltés, drága árnál akku használat).
-* **Hosszú távú Statisztika:** Automatikusan generált napi, havi és éves megtakarítási számlálók.
+* **Valós Idejű Árkalkuláció:** Bruttó piaci ár (Ft/kWh) számítása Nord Pool adatokból, Fixer.io árfolyammal, 27% ÁFA-val és 25 Ft/kWh Rendszerhasználati Díjjal (RHD).
+* **Napi Pénzügyi Mérleg (kWh):** Az inverter pontos napi import/export adatai alapján számolt tényleges költség vagy bevétel.
+* **Intelligens Tőzsdei Tanácsadó:** Javaslat az akkumulátor használatára, figyelembe véve a beállított **biztonsági tartalékot** (kWh).
+* **Hosszú távú Statisztika:** Automatikus napi, havi és éves megtakarítási számlálók.
 
-## Telepítés
+---
+
+## Telepítési folyamat (Setup)
 
 ### 1. Előfeltételek
-A használathoz szükséged lesz:
-1.  **Nord Pool Integrációra:** Telepítve és beállítva (HACS-ból elérhető).
-2.  **Fixer.io API Kulcsra:** Ingyenesen regisztrálható a [fixer.io](https://fixer.io/) oldalon.
-3.  **Inverter Szenzorokra:** * Pillanatnyi teljesítmény: Load (W) és Grid (W).
-    * Napi összesített energia: Napi Import (kWh) és Napi Export (kWh).
+Mielőtt elkezdenéd, győződj meg róla, hogy a következő integrációk és adatok rendelkezésre állnak:
+* **Nord Pool integráció:** HACS-ból telepítve és konfigurálva.
+* **Fixer.io API kulcs:** Regisztrálj egy ingyenes kulcsot a [fixer.io](https://fixer.io/) oldalon.
+* **Inverter szenzorok:** Szükséged lesz a pillanatnyi teljesítmény (W) és a napi összesített energia (kWh) szenzorokra.
 
-### 2. Hozzáadás a HACS-hoz
-1.  Nyisd meg a **HACS**-ot a Home Assistant-ban.
-2.  Kattints a jobb felső sarokban a három pöttyre -> **Custom repositories**.
-3.  Másold be az URL-t: `https://github.com/karolyia79/smart-grid-yield-simulator`
-4.  Kategória: **Integration**.
-5.  Telepítés után **indítsd újra a Home Assistant-ot**.
+### 2. Integráció hozzáadása a HACS-hoz
+1. Nyisd meg a Home Assistant-ot, és menj a **HACS** menüpontba.
+2. Kattints az **Integrations** kategóriára.
+3. A jobb felső sarokban kattints a három pöttyre (**Custom repositories**).
+4. Másold be a repó URL-jét: `https://github.com/karolyia79/smart-grid-yield-simulator`
+5. A kategóriánál válaszd az **Integration** opciót, majd kattints az **ADD** gombra.
+6. Keresd meg a listában a **Smart Grid Yield Simulator**-t és kattints a **Download** gombra.
+7. **FONTOS:** Indítsd újra a Home Assistant-ot a telepítés után!
 
-### 3. Konfiguráció
-1.  **Beállítások** -> **Eszközök és szolgáltatások** -> **Integráció hozzáadása**.
-2.  Keresd meg: **Smart Grid Yield Simulator**.
-3.  Az űrlapon válaszd ki a megfelelő szenzorokat a legördülő listákból.
+### 3. Az integráció konfigurálása (UI Setup)
+1. Menj a **Settings** -> **Devices & Services** menübe.
+2. Kattints az **ADD INTEGRATION** gombra.
+3. Keress rá: `Smart Grid Yield Simulator`.
+4. A megjelenő ablakban add meg az adatokat:
+    * **Fixer.io API Key:** Az általad regisztrált API kulcs.
+    * **Nord Pool Sensor:** Válaszd ki a Nord Pool szenzorodat (EUR/MWh).
+    * **Inverter Load/Grid Power:** A pillanatnyi Watt (W) értékek.
+    * **Daily Import/Export:** Az inverter napi kWh számlálói.
+    * **Battery Capacity & Reserve:** Az akkumulátorod teljes mérete és a ház számára fenntartott tartalék (kWh).
 
-## Létrejövő entitások
+---
 
-| Entitás ID | Leírás | Egység |
-| :--- | :--- | :--- |
-| `sensor.dinamikus_brutto_aramar` | Aktuális piaci ár (ÁFA + RHD) | Ft/kWh |
-| `sensor.napi_halozati_koltseg_tozsdei` | A mai importált energia tőzsdei ára | Ft |
-| `sensor.napi_halozati_bevetel_tozsdei` | A mai exportált energia tőzsdei értéke | Ft |
-| `sensor.elmeleti_nyereseg_merteke` | Különbség a rezsiár (70.1 Ft) és a tőzsde között | Ft/kWh |
-| `sensor.pillanatnyi_megtakaritasi_sebesseg` | Pillanatnyi spórolás mértéke | Ft/h |
-| `sensor.tozsdei_tanacsado` | Akkumulátor kezelési javaslat | - |
-| `sensor.napi_valos_nyereseg` | Ma megspórolt forintok (rezsihez képest) | Ft |
-| `sensor.euro_arfolyam` | A Fixer-től lekért aktuális árfolyam | Ft/EUR |
+## Dashboard Kártya Példa (YAML)
+
+Használd az alábbi kódot egy `Manual` kártyában. A `#` jellel jelölt sorokat cseréld ki a saját invertered entitásaira!
+
+```yaml
+type: vertical-stack
+cards:
+  - type: horizontal-stack
+    cards:
+      - type: gauge
+        entity: sensor.dinamikus_brutto_aramar
+        name: Bruttó Ár
+        min: 0
+        max: 120
+        severity:
+          green: 0
+          yellow: 60
+          red: 70.1
+        needle: true
+      - type: gauge
+        entity: #sensor.inverter_load_power# # Cseréld: Inverter ház fogyasztás (W)
+        name: Ház
+        unit: W
+        min: 0
+        max: 5000
+      - type: gauge
+        entity: #sensor.inverter_battery_soc# # Cseréld: Akkumulátor töltöttség (%)
+        name: Akku
+        unit: "%"
+        min: 0
+        max: 100
+        severity:
+          red: 0
+          yellow: 20
+          green: 45
+        needle: true
+  - type: entities
+    title: Mai Energia Forgalom
+    show_header_toggle: false
+    entities:
+      - type: section
+        label: AC forgalom
+      - entity: #sensor.inverter_today_energy_import# # Cseréld: Napi hálózatról vett áram (kWh)
+        name: Hálózatról vett áram
+        icon: mdi:transmission-tower-import
+      - entity: #sensor.inverter_today_energy_export# # Cseréld: Napi hálózatba eladott áram (kWh)
+        name: Hálózatba eladott áram
+        icon: mdi:transmission-tower-export
+      - type: section
+        label: Akkumulátor forgalom
+      - entity: #sensor.inverter_today_battery_charge# # Cseréld: Napi akku töltés (kWh)
+        name: Mai töltés
+        icon: mdi:battery-arrow-up
+      - entity: #sensor.inverter_today_battery_discharge# # Cseréld: Napi akku kisütés (kWh)
+        name: Mai kisütés
+        icon: mdi:battery-arrow-down
+      - type: section
+        label: PV forgalom
+      - entity: #sensor.inverter_pv_power# # Cseréld: Pillanatnyi napelem teljesítmény (W)
+        name: Napelem pillanatnyi
+        icon: mdi:solar-power
+      - entity: #sensor.inverter_today_production# # Cseréld: Napi napelem termelés (kWh)
+        name: Napelem mai
+        icon: mdi:solar-power
+  - type: entities
+    title: Pénzügyi Szimuláció
+    show_header_toggle: false
+    entities:
+      - entity: sensor.tozsdei_tanacsado
+        name: Javaslat
+      - entity: sensor.pillanatnyi_megtakaritasi_sebesseg
+        name: Pillanatnyi megtakarítás (Ft/h)
+        icon: mdi:speedometer
+      - type: section
+        label: Halmozott Megtakarítás (27% áfás ár)
+      - entity: sensor.napi_valos_nyereseg
+        name: Ma megtermelt Ft
+        icon: mdi:cash-daily
+      - entity: sensor.havi_valos_nyereseg
+        name: Ebben a hónapban Ft
+        icon: mdi:cash-plus
+      - entity: sensor.evi_valos_nyereseg
+        name: Ebben az évben Ft
+        icon: mdi:bank-transfer-in
+```
 
 ## Kiszámítási képlet
-Az integráció a bruttó árat a következő módon kalkulálja:
 $$\text{Bruttó ár} = \left( \frac{\text{NordPool (EUR/MWh)} \times \text{Fixer árfolyam} \times 1.27}{1000} \right) + 25$$
 
 ## Licenc
