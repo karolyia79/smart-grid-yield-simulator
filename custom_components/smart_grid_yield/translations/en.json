@@ -2,28 +2,29 @@
   "config": {
     "step": {
       "user": {
-        "title": "System Type",
+        "title": "SGY System Type",
         "data": {
-          "phase_setting": "Phase configuration & Metering",
+          "phase_setting": "Phase Configuration",
           "fixer_api_key": "Fixer.io API Key"
         }
       },
       "sensors": {
-        "title": "Sensors",
+        "title": "Configure Sensors",
         "data": {
-          "spot_price_sensor": "Nord Pool (EUR/MWh)",
+          "spot_price_sensor": "Nord Pool Price (EUR/MWh)",
           "load_power_sensor": "Household Load (W)",
-          "pv_power_sensor": "PV Production (W) [Optional]",
-          "batt_charge_sensor": "Battery Charge (W) [Optional]",
-          "batt_discharge_sensor": "Battery Discharge (W) [Optional]",
+          "pv_power_sensor": "PV Production (W)",
+          "total_loss_sensor": "Inverter Efficiency Loss (W)",
+          "batt_charge_sensor": "Battery Charge (W)",
+          "batt_discharge_sensor": "Battery Discharge (W)",
           "grid_power_sensor": "Grid Total (W)",
-          "grid_l1_sensor": "L1 Phase (W)",
-          "grid_l2_sensor": "L2 Phase (W)",
-          "grid_l3_sensor": "L3 Phase (W)",
+          "grid_l1_sensor": "Phase L1 (W)",
+          "grid_l2_sensor": "Phase L2 (W)",
+          "grid_l3_sensor": "Phase L3 (W)",
           "daily_import_sensor": "Daily Import (kWh)",
           "daily_export_sensor": "Daily Export (kWh)",
           "battery_soc_sensor": "Battery SOC (%)",
-          "battery_capacity": "Total Capacity (kWh)",
+          "battery_capacity": "Battery Capacity (kWh)",
           "battery_reserve": "Safety Reserve (kWh)"
         }
       }
