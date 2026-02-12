@@ -24,10 +24,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
                     async with session.get(url) as response:
                         res = await response.json()
                         if res.get("success"):
-                            rate = float(res["rates"]["HUF"] / res["rates"]["EUR"])
-                            return rate
+                            return float(res["rates"]["HUF"] / res["rates"]["EUR"])
         except Exception as e:
-            _LOGGER.error("SGY: Fixer hiba: %s", e)
+            _LOGGER.error("SGY: Fixer.io error: %s", e)
         return exchange_data["rate"]
 
     async def async_update_data():
@@ -37,18 +36,13 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             exchange_data["last_update"] = now
 
         return {
-            "spot_price": hass.states.get(entry.data[CONF_SPOT_PRICE]),
-            "load_power": hass.states.get(entry.data[CONF_LOAD_POWER]),
-            "grid_power": hass.states.get(entry.data[CONF_GRID_POWER]),
-            "daily_import": hass.states.get(entry.data[CONF_DAILY_IMPORT]),
-            "daily_export": hass.states.get(entry.data[CONF_DAILY_EXPORT]),
-            "exchange_rate": exchange_data["rate"],
+            "exchange_rate": exchange_data["rate"]
         }
 
     coordinator = DataUpdateCoordinator(
         hass, _LOGGER, name=DOMAIN,
         update_method=async_update_data,
-        update_interval=timedelta(seconds=30),
+        update_interval=timedelta(minutes=30),
     )
 
     await coordinator.async_config_entry_first_refresh()
@@ -57,7 +51,4 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     return True
 
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
-    unload_ok = await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
-    if unload_ok:
-        hass.data[DOMAIN].pop(entry.entry_id)
-    return unload_ok
+    return await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
