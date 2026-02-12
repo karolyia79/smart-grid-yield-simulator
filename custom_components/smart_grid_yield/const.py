@@ -7,5 +7,6 @@ CONF_DAILY_IMPORT = "daily_import_sensor"
 CONF_DAILY_EXPORT = "daily_export_sensor"
 CONF_BATTERY_CAPACITY = "battery_capacity"
 CONF_BATTERY_RESERVE = "battery_reserve"
+CONF_BATTERY_SOC = "battery_soc_sensor"
 
 PLATFORMS = ["sensor"]
