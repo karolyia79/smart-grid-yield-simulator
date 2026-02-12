@@ -3,19 +3,21 @@
     "step": {
       "user": {
         "title": "Smart Grid Yield Szimulátor Beállítás",
-        "description": "Kérlek, add meg a szimulátorhoz szükséges entitásokat. A Watt (W) értékek a pillanatnyi számításhoz, a kWh értékek a napi statisztikához szükségesek.",
+        "description": "Kérlek, add meg a szimulátorhoz szükséges adatokat. A Watt adatok a pillanatnyi sebességhez, a kWh adatok a napi mérleghez kellenek.",
         "data": {
           "fixer_api_key": "Fixer.io API Kulcs",
           "spot_price_sensor": "Nord Pool Szenzor (EUR/MWh)",
           "load_power_sensor": "Inverter Fogyasztás / Load (W)",
           "grid_power_sensor": "Inverter Hálózati Teljesítmény / Grid (W)",
-          "daily_import_sensor": "Napi Hálózati Import Szenzor (kWh)",
-          "daily_export_sensor": "Napi Hálózati Export Szenzor (kWh)"
+          "daily_import_sensor": "Napi Hálózati Import (kWh)",
+          "daily_export_sensor": "Napi Hálózati Export (kWh)",
+          "battery_capacity": "Akku Teljes Kapacitás (kWh)",
+          "battery_reserve": "Háztartási Biztonsági Tartalék (kWh)"
         }
       }
     },
     "abort": {
-      "missing_nordpool": "A Nord Pool integráció szükséges a folytatáshoz!"
+      "missing_nordpool": "A Nord Pool integráció szükséges!"
     }
   }
 }
