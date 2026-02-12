@@ -3,32 +3,30 @@
     "step": {
       "user": {
         "title": "System Type",
-        "description": "Select how your home is connected to the grid and provide your API key.",
         "data": {
-          "phase_setting": "Phase configuration and metering",
+          "phase_setting": "Phase configuration & Metering",
           "fixer_api_key": "Fixer.io API Key"
         }
       },
       "sensors": {
-        "title": "Sensor Configuration",
-        "description": "Provide the entities required for calculation. Power in Watts (W), Energy in kilowatt-hours (kWh).",
+        "title": "Sensors",
         "data": {
-          "spot_price_sensor": "Nord Pool Sensor (EUR/MWh)",
-          "load_power_sensor": "Current household load (W)",
-          "grid_power_sensor": "Grid total power (W)",
-          "grid_l1_sensor": "L1 phase power (W)",
-          "grid_l2_sensor": "L2 phase power (W)",
-          "grid_l3_sensor": "L3 phase power (W)",
-          "daily_import_sensor": "Daily grid import (kWh)",
-          "daily_export_sensor": "Daily grid export (kWh)",
+          "spot_price_sensor": "Nord Pool (EUR/MWh)",
+          "load_power_sensor": "Household Load (W)",
+          "pv_power_sensor": "PV Production (W) [Optional]",
+          "batt_charge_sensor": "Battery Charge (W) [Optional]",
+          "batt_discharge_sensor": "Battery Discharge (W) [Optional]",
+          "grid_power_sensor": "Grid Total (W)",
+          "grid_l1_sensor": "L1 Phase (W)",
+          "grid_l2_sensor": "L2 Phase (W)",
+          "grid_l3_sensor": "L3 Phase (W)",
+          "daily_import_sensor": "Daily Import (kWh)",
+          "daily_export_sensor": "Daily Export (kWh)",
           "battery_soc_sensor": "Battery SOC (%)",
-          "battery_capacity": "Battery total capacity (kWh)",
-          "battery_reserve": "Safety reserve level (kWh)"
+          "battery_capacity": "Total Capacity (kWh)",
+          "battery_reserve": "Safety Reserve (kWh)"
         }
       }
-    },
-    "abort": {
-      "missing_nordpool": "Nord Pool integration not found! Please install it first via HACS."
     }
   }
 }
