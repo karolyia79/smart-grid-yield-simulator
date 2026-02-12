@@ -1,0 +1,12 @@
+{
+  "title": "Smart Grid Yield Simulator",
+  "entity": {
+    "sensor": {
+      "sgy_advisor": { "name": "SGY Advisor" },
+      "sgy_savings_rate": { "name": "Current Savings Rate" },
+      "sgy_daily_savings": { "name": "Daily Savings" },
+      "sgy_monthly_savings": { "name": "Monthly Savings" },
+      "sgy_yearly_savings": { "name": "Yearly Savings" }
+    }
+  }
+}
