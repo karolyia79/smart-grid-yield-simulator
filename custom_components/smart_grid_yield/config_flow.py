@@ -4,7 +4,7 @@ from homeassistant.helpers import selector
 from .const import (
     DOMAIN, CONF_SPOT_PRICE, CONF_LOAD_POWER, CONF_GRID_POWER, 
     CONF_FIXER_API_KEY, CONF_DAILY_IMPORT, CONF_DAILY_EXPORT,
-    CONF_BATTERY_CAPACITY, CONF_BATTERY_RESERVE
+    CONF_BATTERY_CAPACITY, CONF_BATTERY_RESERVE, CONF_BATTERY_SOC
 )
 
 class SGYFlow(config_entries.ConfigFlow, domain=DOMAIN):
@@ -26,6 +26,7 @@ class SGYFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 vol.Required(CONF_GRID_POWER): selector.EntitySelector(selector.EntitySelectorConfig(domain="sensor")),
                 vol.Required(CONF_DAILY_IMPORT): selector.EntitySelector(selector.EntitySelectorConfig(domain="sensor")),
                 vol.Required(CONF_DAILY_EXPORT): selector.EntitySelector(selector.EntitySelectorConfig(domain="sensor")),
+                vol.Required(CONF_BATTERY_SOC): selector.EntitySelector(selector.EntitySelectorConfig(domain="sensor")),
                 vol.Required(CONF_BATTERY_CAPACITY, default=10.0): vol.Coerce(float),
                 vol.Required(CONF_BATTERY_RESERVE, default=2.0): vol.Coerce(float),
             })
