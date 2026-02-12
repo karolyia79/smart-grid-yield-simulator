@@ -1,6 +1,6 @@
 # Smart Grid Yield Simulator (SGY) 🇭🇺
 
-Ez egy Home Assistant egyedi integráció (Custom Component), amelyet kifejezetten a magyarországi napelemes (hibrid/szigetüzemű) rendszerekhez fejlesztettünk. Segít kiszámolni a valós pénzügyi megtakarítást a dinamikus tőzsdei áramárak (Nord Pool) és a rögzített rezsiárak (70.1 Ft/kWh) összevetésével.
+Ez egy Home Assistant egyedi integráció (Custom Component), amelyet kifejezetten a magyarországi napelemes (hibrid/szigetüzemű) rendszerekhez illeszkedik. Segít kiszámolni a valós pénzügyi megtakarítást a dinamikus tőzsdei áramárak (Nord Pool) és a rögzített rezsiárak (70.1 Ft/kWh) összevetésével.
 
 ## Főbb funkciók
 
