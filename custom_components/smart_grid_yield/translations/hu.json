@@ -3,32 +3,30 @@
     "step": {
       "user": {
         "title": "Rendszer Típusa",
-        "description": "Válaszd ki, hogyan csatlakozik a házad a hálózathoz és add meg az API kulcsot.",
         "data": {
-          "phase_setting": "Fázisok száma és mérés módja",
+          "phase_setting": "Fázisok és mérés módja",
           "fixer_api_key": "Fixer.io API Kulcs"
         }
       },
       "sensors": {
-        "title": "Szenzorok Beállítása",
-        "description": "Add meg a számításhoz szükséges entitásokat. A teljesítményt Wattban (W), az energiát kilowattórában (kWh) várjuk.",
+        "title": "Szenzorok",
         "data": {
-          "spot_price_sensor": "Nord Pool Szenzor (EUR/MWh)",
-          "load_power_sensor": "Ház pillanatnyi fogyasztása (W)",
-          "grid_power_sensor": "Hálózati teljesítmény (W)",
-          "grid_l1_sensor": "L1 fázis teljesítménye (W)",
-          "grid_l2_sensor": "L2 fázis teljesítménye (W)",
-          "grid_l3_sensor": "L3 fázis teljesítménye (W)",
-          "daily_import_sensor": "Napi hálózati import (kWh)",
-          "daily_export_sensor": "Napi hálózati export (kWh)",
-          "battery_soc_sensor": "Akku töltöttség (%)",
-          "battery_capacity": "Akku teljes kapacitása (kWh)",
-          "battery_reserve": "Biztonsági tartalék (kWh)"
+          "spot_price_sensor": "Nord Pool (EUR/MWh)",
+          "load_power_sensor": "Ház fogyasztás (W)",
+          "pv_power_sensor": "PV Termelés (W) [Opcionális]",
+          "batt_charge_sensor": "Akku Töltés (W) [Opcionális]",
+          "batt_discharge_sensor": "Akku Kisütés (W) [Opcionális]",
+          "grid_power_sensor": "Hálózat összesen (W)",
+          "grid_l1_sensor": "L1 fázis (W)",
+          "grid_l2_sensor": "L2 fázis (W)",
+          "grid_l3_sensor": "L3 fázis (W)",
+          "daily_import_sensor": "Napi import (kWh)",
+          "daily_export_sensor": "Napi export (kWh)",
+          "battery_soc_sensor": "Akku SOC (%)",
+          "battery_capacity": "Kapacitás (kWh)",
+          "battery_reserve": "Tartalék (kWh)"
         }
       }
-    },
-    "abort": {
-      "missing_nordpool": "A Nord Pool integráció nem található! Kérlek, telepítsd előbb HACS-ból."
     }
   }
 }
