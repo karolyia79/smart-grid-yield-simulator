@@ -2,7 +2,7 @@ from homeassistant.components.sensor import SensorEntity
 from homeassistant.components.integration.sensor import IntegrationSensor
 from homeassistant.components.utility_meter.sensor import UtilityMeterSensor
 from homeassistant.const import UnitOfTime
-from .const import DOMAIN
+from .const import DOMAIN, CONF_BATTERY_CAPACITY, CONF_BATTERY_RESERVE
 
 async def async_setup_entry(hass, entry, async_add_entities):
     coordinator = hass.data[DOMAIN][entry.entry_id]
@@ -13,7 +13,6 @@ async def async_setup_entry(hass, entry, async_add_entities):
         PillanatnyiSebessegSensor(coordinator, entry),
         TozsdeiTanacsadoSensor(coordinator, entry),
         SGYExchangeRateSensor(coordinator, entry),
-        # Új pénzügyi szenzorok a napi kWh adatok alapján
         DailyImportCostSensor(coordinator, entry),
         DailyExportRevenueSensor(coordinator, entry)
     ]
@@ -125,16 +124,19 @@ class TozsdeiTanacsadoSensor(SensorEntity):
     def __init__(self, coordinator, entry):
         self.coordinator = coordinator
         self._attr_unique_id = f"{entry.entry_id}_adv"
+        self._capacity = entry.data.get(CONF_BATTERY_CAPACITY, 10.0)
+        self._reserve_kwh = entry.data.get(CONF_BATTERY_RESERVE, 2.0)
     @property
     def entity_id(self): return "sensor.tozsdei_tanacsado"
     @property
     def state(self):
         try:
             nyer = float(self.hass.states.get("sensor.elmeleti_nyereseg_merteke").state)
+            usable = round(self._capacity - self._reserve_kwh, 1)
             if nyer > 15: return "VÉTEL ÉS TÖLTÉS 🔋 (Extrém olcsó!)"
             if nyer > 0: return "VÉTEL ✅ (Olcsóbb mint a rezsi)"
-            if nyer > -15: return "TARTÁS ⚖️ (Napelem/Fix rezsi)"
-            return "AKKU / ELADÁS ⚠️ (Drága tőzsde)"
+            if nyer < -10: return f"ELADÁS / AKKU ⚠️ ({usable} kWh felett!)"
+            return "TARTÁS ⚖️ (Napelem/Fix rezsi)"
         except: return "Init..."
 
 class SGYExchangeRateSensor(SensorEntity):
