@@ -21,9 +21,8 @@ class SGYFlow(config_entries.ConfigFlow, domain=DOMAIN):
                         options=[
                             {"value": PHASE_1, "label": "1 fázisú rendszer"},
                             {"value": PHASE_3_AGGREGATED, "label": "3 fázisú (Egyben mért)"},
-                            {"value": PHASE_3_INDIVIDUAL, "label": "3 fázisú (Fázisonkénti: L1,L2,L3)"}
-                        ],
-                        mode=selector.SelectSelectorMode.DROPDOWN
+                            {"value": PHASE_3_INDIVIDUAL, "label": "3 fázisú (L1,L2,L3)"}
+                        ], mode=selector.SelectSelectorMode.DROPDOWN
                     )
                 ),
                 vol.Required(CONF_FIXER_API_KEY): str,
@@ -33,11 +32,14 @@ class SGYFlow(config_entries.ConfigFlow, domain=DOMAIN):
     async def async_step_sensors(self, user_input=None):
         if user_input is not None:
             user_input.update(self.init_data)
-            return self.async_create_entry(title="SGY Simulator", data=user_input)
+            return self.async_create_entry(title="SGY Full Simulator", data=user_input)
 
         fields = {
             vol.Required(CONF_SPOT_PRICE): selector.EntitySelector(selector.EntitySelectorConfig(domain="sensor")),
             vol.Required(CONF_LOAD_POWER): selector.EntitySelector(selector.EntitySelectorConfig(domain="sensor")),
+            vol.Optional(CONF_PV_POWER): selector.EntitySelector(selector.EntitySelectorConfig(domain="sensor")),
+            vol.Optional(CONF_BATT_CHARGE): selector.EntitySelector(selector.EntitySelectorConfig(domain="sensor")),
+            vol.Optional(CONF_BATT_DISCHARGE): selector.EntitySelector(selector.EntitySelectorConfig(domain="sensor")),
         }
 
         phase_mode = self.init_data[CONF_PHASE_SETTING]
@@ -46,7 +48,7 @@ class SGYFlow(config_entries.ConfigFlow, domain=DOMAIN):
             fields[vol.Required(CONF_GRID_L2)] = selector.EntitySelector(selector.EntitySelectorConfig(domain="sensor"))
             fields[vol.Required(CONF_GRID_L3)] = selector.EntitySelector(selector.EntitySelectorConfig(domain="sensor"))
         else:
-            fields[vol.Required(CONF_GRID_POWER)] = selector.EntitySelector(selector.EntitySelectorConfig(domain="sensor"))
+            fields[vol.Required(CONF_GRID_POWER)] = selector.EntitySelector(selector.EntitySelectorConfig(domain="sensor")),
 
         fields.update({
             vol.Required(CONF_DAILY_IMPORT): selector.EntitySelector(selector.EntitySelectorConfig(domain="sensor")),
@@ -55,5 +57,4 @@ class SGYFlow(config_entries.ConfigFlow, domain=DOMAIN):
             vol.Required(CONF_BATTERY_CAPACITY, default=10.0): vol.Coerce(float),
             vol.Required(CONF_BATTERY_RESERVE, default=2.0): vol.Coerce(float),
         })
-
         return self.async_show_form(step_id="sensors", data_schema=vol.Schema(fields))
