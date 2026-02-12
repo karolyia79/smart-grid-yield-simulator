@@ -2,6 +2,9 @@
   "title": "Okos Hálózat Megtakarítás Szimulátor",
   "entity": {
     "sensor": {
+      "sgy_advisor": { 
+        "name": "Tőzsdei tanácsadó"
+      },
       "sgy_savings_rate": { "name": "Pillanatnyi spórolás üteme" },
       "sgy_daily_savings": { "name": "Napi megtakarítás" },
       "sgy_monthly_savings": { "name": "Havi megtakarítás" },
