@@ -2,18 +2,28 @@
   "config": {
     "step": {
       "user": {
-        "title": "Smart Grid Yield Setup",
-        "description": "Provide the following data for the simulation. Watt (W) values are for real-time calculation, while kWh values are for daily balance and battery management.",
+        "title": "System Type",
+        "description": "Select how your home is connected to the grid and provide your API key.",
         "data": {
-          "fixer_api_key": "Fixer.io API Key",
+          "phase_setting": "Phase configuration and metering",
+          "fixer_api_key": "Fixer.io API Key"
+        }
+      },
+      "sensors": {
+        "title": "Sensor Configuration",
+        "description": "Provide the entities required for calculation. Power in Watts (W), Energy in kilowatt-hours (kWh).",
+        "data": {
           "spot_price_sensor": "Nord Pool Sensor (EUR/MWh)",
-          "load_power_sensor": "Inverter Load Power (W)",
-          "grid_power_sensor": "Inverter Grid Power (W)",
-          "daily_import_sensor": "Daily Grid Import (kWh)",
-          "daily_export_sensor": "Daily Grid Export (kWh)",
-          "battery_soc_sensor": "Battery State of Charge (%)",
-          "battery_capacity": "Battery Total Capacity (kWh)",
-          "battery_reserve": "Household Safety Reserve (kWh)"
+          "load_power_sensor": "Current household load (W)",
+          "grid_power_sensor": "Grid total power (W)",
+          "grid_l1_sensor": "L1 phase power (W)",
+          "grid_l2_sensor": "L2 phase power (W)",
+          "grid_l3_sensor": "L3 phase power (W)",
+          "daily_import_sensor": "Daily grid import (kWh)",
+          "daily_export_sensor": "Daily grid export (kWh)",
+          "battery_soc_sensor": "Battery SOC (%)",
+          "battery_capacity": "Battery total capacity (kWh)",
+          "battery_reserve": "Safety reserve level (kWh)"
         }
       }
     },
