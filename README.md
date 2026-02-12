@@ -1,107 +1,56 @@
-# Smart Grid Yield Simulator
+# Smart Grid Yield Simulator (SGY) 🇭🇺
 
-**Smart Grid Yield Simulator** is a financial pre-calculator for Home Assistant, specifically designed for solar panel and battery storage owners. It helps you estimate and track your actual savings by comparing self-consumption and battery usage against **real-time dynamic (spot) market prices**.
+Ez egy Home Assistant egyedi integráció (Custom Component), amelyet kifejezetten a magyarországi napelemes (hibrid/szigetüzemű) rendszerekhez fejlesztettünk. Segít kiszámolni a valós pénzügyi megtakarítást a dinamikus tőzsdei áramárak (Nord Pool) és a rögzített rezsiárak (70.1 Ft/kWh) összevetésével.
 
-This tool is essential for those transitioning from flat-rate (settlement) systems to market-based pricing.
+## Főbb funkciók
 
----
+* **Bruttó Árkalkuláció:** Kiszámolja a valós piaci árat (Ft/kWh) a Nord Pool adatokból, az aktuális EUR/HUF árfolyam (Fixer.io), a 27%-os ÁFA és a 25 Ft/kWh Rendszerhasználati Díj (RHD) figyelembevételével.
+* **Valós Megtakarítás Számítása:** * A saját termelésből (nap/akku) való fogyasztást fix 70.1 Ft-os értéken számolja.
+    * Hálózati vételezés esetén figyelembe veszi a tőzsdei ár és a 70.1 Ft közötti különbséget (nyereséget).
+* **Tőzsdei Tanácsadó:** Szöveges javaslatot ad az akkumulátor kezelésére (Vétel, Tartás, Eladás).
+* **Statisztika:** Automatikusan generált napi, havi és éves megtakarítási számlálók (Utility Meters).
 
-## 🚀 Installation Guide
+## Telepítés
 
-### 1. Prerequisite: Enable Packages
-This integration uses the Home Assistant "Packages" system for a modular setup. Ensure you have the following line in your `configuration.yaml` file:
+### 1. Előfeltételek
+A használathoz szükséged lesz az alábbiakra:
+1.  **Nord Pool Integráció:** Telepítve és konfigurálva (HACS-ból elérhető).
+2.  **Fixer.io API Kulcs:** Ingyenesen regisztrálható a [fixer.io](https://fixer.io/) oldalon.
+3.  **Inverter adatok:** Szenzorok a ház pillanatnyi fogyasztásához (Load) és a hálózati teljesítményhez (Grid).
 
-```yaml
-homeassistant:
-  packages: !include_dir_named packages
-```
-## 🧮 How the Math Works (The Logic)
+### 2. Hozzáadás a HACS-hoz
+1.  Nyisd meg a **HACS**-ot a Home Assistant-ban.
+2.  Kattints a jobb felső sarokban a három pöttyre, majd a **Custom repositories** menüpontra.
+3.  Másold be az URL-t: `https://github.com/karolyia79/smart-grid-yield-simulator`
+4.  Kategóriának válaszd az **Integration**-t, majd kattints az **Add** gombra.
+5.  Telepítsd a megjelenő integrációt, majd **indítsd újra a Home Assistant-ot**.
 
-The simulator calculates your **"Savings Speed"** ($Ft/h$) in real-time, then integrates this value over time to provide total financial gains. This is essential for understanding the ROI of battery systems under dynamic pricing.
+### 3. Konfiguráció az UI-n
+1.  Menj a **Beállítások** -> **Eszközök és szolgáltatások** menübe.
+2.  Kattints az **Integráció hozzáadása** gombra.
+3.  Keresd meg a **Smart Grid Yield Simulator** nevet.
+4.  Add meg a kért adatokat:
+    * Fixer.io API kulcs
+    * Nord Pool szenzor (EUR/MWh)
+    * Inverter Load Power (W)
+    * Inverter Grid Power (W)
 
-### The Core Formula:
-The logic distinguishes between two main states to ensure accuracy:
+## Létrejövő entitások
 
-#### A) Self-Sufficient State (Grid Power ≤ 0)
-When your home is powered by Solar or Battery, you are saving the **full retail price** of electricity (the price you would otherwise pay to the utility).
-$$Savings = Household\ Load\ (kW) \times Static\ Price\ (e.g.,\ 70.1\ Ft)$$
-*Every kWh you don't buy at the fixed high price is a direct saving.*
+Az integráció a következő fix azonosítójú szenzorokat hozza létre:
 
-#### B) Grid Import State (Grid Power > 0)
-When you are buying electricity, you only save on the portion provided by your system (self-consumption). The simulation also calculates the benefit based on the delta between the static price and the current market price.
-$$Savings = (Self\ Consumed\ Power \times Static\ Price) + (Grid\ Power \times Spot\ Price)$$
+| Entitás ID | Leírás | Egység |
+| :--- | :--- | :--- |
+| `sensor.dinamikus_brutto_aramar` | Bruttó piaci ár (ÁFA + RHD) | Ft/kWh |
+| `sensor.elmeleti_nyereseg_merteke` | Különbség a 70.1 Ft-os árhoz képest | Ft/kWh |
+| `sensor.pillanatnyi_megtakaritasi_sebesseg` | Pillanatnyi spórolás mértéke | Ft/h |
+| `sensor.tozsdei_tanacsado` | Akkumulátor kezelési javaslat | - |
+| `sensor.napi_valos_nyereseg` | Ma összesen megspórolt forint | Ft |
+| `sensor.euro_arfolyam` | A Fixer-től lekért HUF/EUR árfolyam | Ft |
 
-### Data Accumulation:
-1. **Riemann Sum Integral:** Converts the momentary $Ft/h$ rate into a cumulative $Ft$ value using the `left` integration method for high accuracy.
-2. **Utility Meters:** Provides structured Daily, Monthly, and Yearly financial reports automatically.
+## Kiszámítási mód
+Az integráció a bruttó árat az alábbi képlet alapján számolja:
+$$\text{Bruttó ár} = \left( \frac{\text{NordPool (EUR/MWh)} \times \text{Árfolyam} \times 1.27}{1000} \right) + 25$$
 
----
-
-## 📊 Dashboard Card
-Add a **Manual Card** to your dashboard and paste this YAML code. The headers are in English, but entity names will automatically translate if your Home Assistant language is set to Hungarian.
-
-```yaml
-type: vertical-stack
-cards:
-  - type: horizontal-stack
-    cards:
-      - type: gauge
-        entity: sensor.dinamikus_brutto_aramar
-        name: Gross Price
-        min: 0
-        max: 120
-        severity:
-          green: 0
-          yellow: 60
-          red: 70.1
-        needle: true
-      - type: gauge
-        entity: sensor.deye_inverter_load_power
-        name: House Load
-        unit: W
-        min: 0
-        max: 5000
-      - type: gauge
-        entity: sensor.deye_inverter_battery
-        name: Battery
-        unit: "%"
-        min: 0
-        max: 100
-        severity:
-          red: 0
-          yellow: 20
-          green: 45
-        needle: true
-  - type: entities
-    title: Daily Energy Flow
-    show_header_toggle: false
-    entities:
-      - type: section
-        label: AC Traffic
-      - entity: sensor.deye_inverter_today_energy_import
-        name: Grid Import
-      - entity: sensor.deye_inverter_today_energy_export
-        name: Grid Export
-      - type: section
-        label: Battery Traffic
-      - entity: sensor.deye_inverter_today_battery_charge
-        name: Today Charge
-      - entity: sensor.deye_inverter_today_battery_discharge
-        name: Today Discharge
-      - type: section
-        label: Solar Production
-      - entity: sensor.deye_inverter_pv_power
-        name: PV Current Power
-      - entity: sensor.deye_inverter_today_production
-        name: PV Today Total
-  - type: entities
-    title: Financial Simulation
-    show_header_toggle: false
-    entities:
-      - entity: sensor.sgy_advisor
-      - entity: sensor.smart_grid_savings_rate
-      - type: section
-        label: Accumulated Savings (VAT incl.)
-      - entity: sensor.sgy_daily_savings
-      - entity: sensor.sgy_monthly_savings
-      - entity: sensor.sgy_yearly_savings
+## Licenc
+MIT
