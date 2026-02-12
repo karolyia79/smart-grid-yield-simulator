@@ -3,16 +3,21 @@
     "step": {
       "user": {
         "title": "Smart Grid Yield Simulator Setup",
-        "description": "Please provide the required entities. Watt (W) values are used for real-time speed, kWh values for daily statistics.",
+        "description": "Please provide the following information. Watt (W) values are used for real-time speed calculation, while kWh values are used for daily financial balance.",
         "data": {
           "fixer_api_key": "Fixer.io API Key",
           "spot_price_sensor": "Nord Pool Sensor (EUR/MWh)",
           "load_power_sensor": "Inverter Load Power (W)",
           "grid_power_sensor": "Inverter Grid Power (W)",
           "daily_import_sensor": "Daily Grid Import Sensor (kWh)",
-          "daily_export_sensor": "Daily Grid Export Sensor (kWh)"
+          "daily_export_sensor": "Daily Grid Export Sensor (kWh)",
+          "battery_capacity": "Total Battery Capacity (kWh)",
+          "battery_reserve": "Household Safety Reserve (kWh)"
         }
       }
+    },
+    "abort": {
+      "missing_nordpool": "The Nord Pool integration is required. Please install it first via HACS."
     }
   }
 }
