@@ -1,12 +1,19 @@
 {
-  "title": "Smart Grid Yield Simulator",
-  "entity": {
-    "sensor": {
-      "sgy_advisor": { "name": "SGY Advisor" },
-      "sgy_savings_rate": { "name": "Current Savings Rate" },
-      "sgy_daily_savings": { "name": "Daily Savings" },
-      "sgy_monthly_savings": { "name": "Monthly Savings" },
-      "sgy_yearly_savings": { "name": "Yearly Savings" }
+  "config": {
+    "step": {
+      "user": {
+        "title": "Smart Grid Yield Simulator Setup",
+        "description": "Please provide the following information to set up the simulator. Make sure the Nord Pool integration is already installed.",
+        "data": {
+          "fixer_api_key": "Fixer.io API Key",
+          "spot_price_sensor": "Nord Pool Sensor (EUR/MWh)",
+          "load_power_sensor": "Inverter Load Power (W)",
+          "grid_power_sensor": "Inverter Grid/External Power (W)"
+        }
+      }
+    },
+    "abort": {
+      "missing_nordpool": "The Nord Pool integration is required. Please install it first via HACS."
     }
   }
 }
