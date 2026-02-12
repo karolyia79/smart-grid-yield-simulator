@@ -57,10 +57,14 @@ class DinamikusArSensor(SGYSensorBase):
     _attr_unique_id = "sgy_dynamic_price"
     @property
     def native_value(self):
-        tozsde = self._get_f(CONF_SPOT_PRICE)
+        tozsde_eur_mwh = self._get_f(CONF_SPOT_PRICE)
         rate = self.coordinator.data.get("exchange_rate")
         if not rate: return None
-        return round(((tozsde * rate * 1.27) / 1000) + 25.0, 2)
+        
+        # 1. Tőzsdei EUR/MWh -> Ft/kWh konverzió azonnal
+        price_huf_kwh = (tozsde_eur_mwh * rate) / 1000
+        # 2. Bruttósítás (ÁFA) + Fix RHD (25 Ft)
+        return round((price_huf_kwh * 1.27) + 25.0, 2)
 
 class PillanatnyiSebessegSensor(SGYSensorBase):
     _attr_name = "Pillanatnyi Megtakarítási Sebesség"
@@ -70,11 +74,17 @@ class PillanatnyiSebessegSensor(SGYSensorBase):
     def native_value(self):
         load_kw = self._get_f(CONF_LOAD_POWER) / 1000
         grid_kw = self._get_grid_kw()
-        price = self.hass.states.get("sensor.dinamikus_brutto_aramar")
-        if not price or price.state in ["unknown", "unavailable"]: return round(max(0, load_kw + min(0, grid_kw)) * 70.1, 2)
-        p_diff = 70.1 - float(price.state)
-        saving = load_kw * 70.1
-        return round(saving + (grid_kw * p_diff), 2) if grid_kw > 0 else round(max(0, (load_kw + grid_kw) * 70.1), 2)
+        price_s = self.hass.states.get("sensor.dinamikus_brutto_aramar")
+        
+        # Ha nincs tőzsdei ár, 70.1 Ft-tal számol (rezsiár)
+        current_price = float(price_s.state) if price_s and price_s.state not in ["unknown", "unavailable"] else 70.1
+        
+        p_diff = 70.1 - current_price
+        # Ha exportálunk (grid > 0), a nyereség: a ház fogyasztásának megspórolt rezsiára + az eladott áram árkülönbözete
+        if grid_kw > 0:
+            return round((load_kw * 70.1) + (grid_kw * p_diff), 2)
+        # Ha importálunk, csak a napelem/akku által kiváltott részt számoljuk rezsiáron
+        return round(max(0, (load_kw + grid_kw) * 70.1), 2)
 
 class SystemLossSensor(SGYSensorBase):
     _attr_name = "Rendszer pillanatnyi vesztesége"
