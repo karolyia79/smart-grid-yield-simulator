@@ -15,12 +15,17 @@ async def async_setup_entry(hass, entry, async_add_entities):
         PillanatnyiSebessegSensor(coordinator, entry),
         TozsdeiTanacsadoSensor(coordinator, entry),
         SGYExchangeRateSensor(coordinator, entry),
-        SystemLossSensor(coordinator, entry),
-        DailyImportCostSensor(coordinator, entry),
-        DailyExportRevenueSensor(coordinator, entry)
+        SystemLossSensor(coordinator, entry)
     ]
     
-    acc = IntegrationSensor(integration_method="left", name="SGY Összesített Megtakarítás Számláló", round_digits=2, source_entity="sensor.pillanatnyi_megtakaritasi_sebesseg", unique_id=f"{entry.entry_id}_acc", unit_time=UnitOfTime.HOURS)
+    acc = IntegrationSensor(
+        integration_method="left", 
+        name="SGY Összesített Megtakarítás Számláló", 
+        round_digits=2, 
+        source_entity="sensor.pillanatnyi_megtakaritasi_sebesseg", 
+        unique_id=f"{entry.entry_id}_acc", 
+        unit_time=UnitOfTime.HOURS
+    )
     
     meters = [
         UtilityMeterSensor(cron_pattern=None, cycle="daily", name="Napi Valós Nyereség", source_entity="sensor.osszesitett_megtakaritas_szamlalo", unique_id=f"{entry.entry_id}_d"),
@@ -77,14 +82,7 @@ class SystemLossSensor(SGYSensorBase):
     _attr_unique_id = "sgy_system_loss"
     @property
     def native_value(self):
-        pv = self._get_f(CONF_PV_POWER)
-        b_in = self._get_f(CONF_BATT_CHARGE)
-        b_out = self._get_f(CONF_BATT_DISCHARGE)
-        load = self._get_f(CONF_LOAD_POWER)
-        grid = self._get_grid_kw() * 1000
-        income = pv + b_out + (abs(grid) if grid < 0 else 0)
-        usage = load + b_in + (grid if grid > 0 else 0)
-        return round(max(0, income - usage), 1)
+        return self._get_f(CONF_TOTAL_LOSS)
 
 class TozsdeiTanacsadoSensor(SGYSensorBase):
     _attr_name = "Tőzsdei Tanácsadó"
@@ -112,28 +110,6 @@ class ElmeletiNyeresegSensor(SGYSensorBase):
     def native_value(self):
         p = self.hass.states.get("sensor.dinamikus_brutto_aramar")
         try: return round(70.1 - float(p.state), 2)
-        except: return 0
-
-class DailyImportCostSensor(SGYSensorBase):
-    _attr_name = "Napi Hálózati Költség (Tőzsdei)"
-    _attr_native_unit_of_measurement = "Ft"
-    _attr_unique_id = "sgy_d_imp"
-    @property
-    def native_value(self):
-        kwh = self._get_f(CONF_DAILY_IMPORT)
-        p = self.hass.states.get("sensor.dinamikus_brutto_aramar")
-        try: return round(kwh * float(p.state), 2)
-        except: return 0
-
-class DailyExportRevenueSensor(SGYSensorBase):
-    _attr_name = "Napi Hálózati Bevétel (Tőzsdei)"
-    _attr_native_unit_of_measurement = "Ft"
-    _attr_unique_id = "sgy_d_exp"
-    @property
-    def native_value(self):
-        kwh = self._get_f(CONF_DAILY_EXPORT)
-        p = self.hass.states.get("sensor.dinamikus_brutto_aramar")
-        try: return round(kwh * float(p.state), 2)
         except: return 0
 
 class SGYExchangeRateSensor(SGYSensorBase):
