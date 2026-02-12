@@ -2,18 +2,28 @@
   "config": {
     "step": {
       "user": {
-        "title": "Smart Grid Yield Beállítás",
-        "description": "Add meg az adatokat a szimulációhoz. A Watt (W) értékek a pillanatnyi számításhoz, a kWh értékek a napi mérleghez és az akkumulátor menedzsmenthez szükségesek.",
+        "title": "Rendszer Típusa",
+        "description": "Válaszd ki, hogyan csatlakozik a házad a hálózathoz és add meg az API kulcsot.",
         "data": {
-          "fixer_api_key": "Fixer.io API Kulcs",
+          "phase_setting": "Fázisok száma és mérés módja",
+          "fixer_api_key": "Fixer.io API Kulcs"
+        }
+      },
+      "sensors": {
+        "title": "Szenzorok Beállítása",
+        "description": "Add meg a számításhoz szükséges entitásokat. A teljesítményt Wattban (W), az energiát kilowattórában (kWh) várjuk.",
+        "data": {
           "spot_price_sensor": "Nord Pool Szenzor (EUR/MWh)",
-          "load_power_sensor": "Inverter Fogyasztás / Load (W)",
-          "grid_power_sensor": "Inverter Hálózat / Grid (W)",
-          "daily_import_sensor": "Napi Hálózati Import (kWh)",
-          "daily_export_sensor": "Napi Hálózati Export (kWh)",
-          "battery_soc_sensor": "Akkumulátor Töltöttség (%)",
-          "battery_capacity": "Akkumulátor Kapacitás (kWh)",
-          "battery_reserve": "Biztonsági Tartalék (kWh)"
+          "load_power_sensor": "Ház pillanatnyi fogyasztása (W)",
+          "grid_power_sensor": "Hálózati teljesítmény (W)",
+          "grid_l1_sensor": "L1 fázis teljesítménye (W)",
+          "grid_l2_sensor": "L2 fázis teljesítménye (W)",
+          "grid_l3_sensor": "L3 fázis teljesítménye (W)",
+          "daily_import_sensor": "Napi hálózati import (kWh)",
+          "daily_export_sensor": "Napi hálózati export (kWh)",
+          "battery_soc_sensor": "Akku töltöttség (%)",
+          "battery_capacity": "Akku teljes kapacitása (kWh)",
+          "battery_reserve": "Biztonsági tartalék (kWh)"
         }
       }
     },
