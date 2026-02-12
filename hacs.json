@@ -1,6 +1,6 @@
 {
   "name": "Smart Grid Yield Simulator",
   "content_type": "integration",
-  "description": "Financial pre-calculator for dynamic/spot pricing.",
+  "description": "Financial simulator for dynamic energy pricing.",
   "render_readme": true
 }
