@@ -5,9 +5,9 @@ Ez egy Home Assistant egyedi integráció, amelyet kifejezetten a magyarországi
 ## Főbb funkciók
 
 * **Valós Idejű Árkalkuláció:** Bruttó piaci ár (Ft/kWh) számítása Nord Pool adatokból, Fixer.io árfolyammal, 27% ÁFA-val és 25 Ft/kWh Rendszerhasználati Díjjal (RHD).
-* **Napi Pénzügyi Mérleg (kWh):** Az inverter pontos napi import/export adatai alapján számolt tényleges költség vagy bevétel.
-* **Intelligens Tőzsdei Tanácsadó:** Javaslat az akkumulátor használatára, figyelembe véve a beállított **biztonsági tartalékot** (kWh).
-* **Hosszú távú Statisztika:** Automatikus napi, havi és éves megtakarítási számlálók.
+* **Napi Pénzügyi Mérleg (kWh):** Az inverter pontos napi import/export adatai alapján számolt tényleges költség vagy bevétel tőzsdei áron.
+* **Intelligens Tőzsdei Tanácsadó:** Javaslat az akkumulátor használatára, amely folyamatosan jelzi a beállított **biztonsági tartalékig (kWh)** hátralévő energiamennyiséget.
+* **Hosszú távú Statisztika:** Automatikus napi, havi és éves megtakarítási számlálók (rezsiárhoz viszonyítva).
 
 ---
 
@@ -17,7 +17,7 @@ Ez egy Home Assistant egyedi integráció, amelyet kifejezetten a magyarországi
 Mielőtt elkezdenéd, győződj meg róla, hogy a következő integrációk és adatok rendelkezésre állnak:
 * **Nord Pool integráció:** HACS-ból telepítve és konfigurálva.
 * **Fixer.io API kulcs:** Regisztrálj egy ingyenes kulcsot a [fixer.io](https://fixer.io/) oldalon.
-* **Inverter szenzorok:** Szükséged lesz a pillanatnyi teljesítmény (W) és a napi összesített energia (kWh) szenzorokra.
+* **Inverter szenzorok:** Szükséged lesz a pillanatnyi teljesítmény (W), a napi összesített energia (kWh) és az akkumulátor töltöttség (%) szenzorokra.
 
 ### 2. Integráció hozzáadása a HACS-hoz
 1. Nyisd meg a Home Assistant-ot, és menj a **HACS** menüpontba.
@@ -35,15 +35,16 @@ Mielőtt elkezdenéd, győződj meg róla, hogy a következő integrációk és 
 4. A megjelenő ablakban add meg az adatokat:
     * **Fixer.io API Key:** Az általad regisztrált API kulcs.
     * **Nord Pool Sensor:** Válaszd ki a Nord Pool szenzorodat (EUR/MWh).
-    * **Inverter Load/Grid Power:** A pillanatnyi Watt (W) értékek.
-    * **Daily Import/Export:** Az inverter napi kWh számlálói.
-    * **Battery Capacity & Reserve:** Az akkumulátorod teljes mérete és a ház számára fenntartott tartalék (kWh).
+    * **Inverter Load/Grid Power:** Pillanatnyi Watt (W) értékek.
+    * **Daily Import/Export:** Inverter napi kWh számlálói.
+    * **Battery SOC:** Akkumulátor töltöttsége százalékban (%).
+    * **Battery Capacity & Reserve:** Az akku teljes mérete és a fenntartott tartalék (kWh).
 
 ---
 
 ## Dashboard Kártya Példa (YAML)
 
-Használd az alábbi kódot egy `Manual` kártyában. A `#` jellel jelölt sorokat cseréld ki a saját invertered entitásaira!
+Másold be egy `Manual` kártyába az alábbi kódot. A `#` jellel jelölt sorokat cseréld ki a saját invertered entitásaira!
 
 ```yaml
 type: vertical-stack
@@ -61,13 +62,13 @@ cards:
           red: 70.1
         needle: true
       - type: gauge
-        entity: #sensor.inverter_load_power# # Cseréld: Inverter ház fogyasztás (W)
+        entity: #sensor.inverter_load_power# # Cseréld: Ház fogyasztás (W)
         name: Ház
         unit: W
         min: 0
         max: 5000
       - type: gauge
-        entity: #sensor.inverter_battery_soc# # Cseréld: Akkumulátor töltöttség (%)
+        entity: #sensor.inverter_battery_soc# # Cseréld: Akku töltöttség (%)
         name: Akku
         unit: "%"
         min: 0
@@ -83,39 +84,32 @@ cards:
     entities:
       - type: section
         label: AC forgalom
-      - entity: #sensor.inverter_today_energy_import# # Cseréld: Napi hálózatról vett áram (kWh)
-        name: Hálózatról vett áram
+      - entity: #sensor.inverter_today_energy_import# # Cseréld: Napi import (kWh)
+        name: Hálózatról vett
         icon: mdi:transmission-tower-import
-      - entity: #sensor.inverter_today_energy_export# # Cseréld: Napi hálózatba eladott áram (kWh)
-        name: Hálózatba eladott áram
+      - entity: #sensor.inverter_today_energy_export# # Cseréld: Napi export (kWh)
+        name: Hálózatba eladott
         icon: mdi:transmission-tower-export
       - type: section
-        label: Akkumulátor forgalom
-      - entity: #sensor.inverter_today_battery_charge# # Cseréld: Napi akku töltés (kWh)
-        name: Mai töltés
-        icon: mdi:battery-arrow-up
+        label: Akkumulátor & PV
       - entity: #sensor.inverter_today_battery_discharge# # Cseréld: Napi akku kisütés (kWh)
-        name: Mai kisütés
+        name: Mai akku használat
         icon: mdi:battery-arrow-down
-      - type: section
-        label: PV forgalom
-      - entity: #sensor.inverter_pv_power# # Cseréld: Pillanatnyi napelem teljesítmény (W)
-        name: Napelem pillanatnyi
-        icon: mdi:solar-power
       - entity: #sensor.inverter_today_production# # Cseréld: Napi napelem termelés (kWh)
-        name: Napelem mai
+        name: Napelem mai össz.
         icon: mdi:solar-power
   - type: entities
     title: Pénzügyi Szimuláció
     show_header_toggle: false
     entities:
       - entity: sensor.tozsdei_tanacsado
-        name: Javaslat
+        name: Javaslat & Tartalék Infó
+        icon: mdi:information-outline
       - entity: sensor.pillanatnyi_megtakaritasi_sebesseg
         name: Pillanatnyi megtakarítás (Ft/h)
         icon: mdi:speedometer
       - type: section
-        label: Halmozott Megtakarítás (27% áfás ár)
+        label: Halmozott Megtakarítás (rezsiárhoz képest)
       - entity: sensor.napi_valos_nyereseg
         name: Ma megtermelt Ft
         icon: mdi:cash-daily
