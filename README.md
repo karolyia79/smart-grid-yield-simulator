@@ -1,47 +1,136 @@
 # Smart Grid Yield Simulator (SGY) 🇭🇺
 
-Ez egy Home Assistant egyedi integráció, amelyet kifejezetten a magyarországi napelemes (hibrid vagy szigetüzemű) rendszerekhez fejlesztettünk. Az integráció segít kiszámolni a valós pénzügyi megtakarítást a dinamikus tőzsdei áramárak (Nord Pool) és a rögzített rezsiárak (70.1 Ft/kWh) összevetésével.
 
 
+Ez egy Home Assistant egyedi integráció, amelyet kifejezetten a magyarországi napelemes (hibrid vagy szigetüzemű) rendszerekhez fejlesztettünk. Az integráció segít kiszámolni a valós pénzügyi megtakarítást a dinamikus tőzsdei áramárak és a rögzített rezsiárak (70.1 Ft/kWh) összevetésével.
 
-## Főbb funkciók
+## 🚀 Főbb funkciók
 
-* **Rugalmas Fázis-kezelés:** Támogatja az 1 fázisú, a 3 fázisú (egyben mért) és a fázisonkénti (L1, L2, L3 - pl. Shelly 3EM) mérést.
-* **Valós Idejű Árkalkuláció:** Bruttó piaci ár (Ft/kWh) számítása Nord Pool adatokból, Fixer.io árfolyammal, 27% ÁFA-val és 25 Ft/kWh Rendszerhasználati Díjjal (RHD).
-* **Inverter Hatékonyság:** Az inverter saját belső veszteség-szenzorának (W) támogatása a pontosabb rendszerkép érdekében.
-* **Intelligens Tőzsdei Tanácsadó:** Javaslatot tesz az akkumulátor használatára, figyelembe véve a beállított **biztonsági tartalékot (kWh)**.
-* **Hosszú távú Statisztika:** Automatikus napi, havi és éves megtakarítási számlálók a rezsiárhoz viszonyítva.
-
----
-
-## Telepítési folyamat (Setup)
-
-### 1. Előfeltételek
-Mielőtt elkezdenéd, győződj meg róla, hogy a következő integrációk rendelkezésre állnak:
-* **Nord Pool integráció:** HACS-ból telepítve és konfigurálva.
-* **Fixer.io API kulcs:** Regisztrálj egy ingyenes kulcsot a [fixer.io](https://fixer.io/) oldalon.
-* **Inverter szenzorok:** Pillanatnyi teljesítmény (W), napi összesített energia (kWh) és akkumulátor adatok.
-
-### 2. Integráció hozzáadása a HACS-hoz
-1.  Nyisd meg a Home Assistant-ot -> **HACS** -> **Integrations**.
-2.  Jobb felső sarok (három pötty) -> **Custom repositories**.
-3.  Másold be a repó URL-jét: `https://github.com/karolyia79/smart-grid-yield-simulator`
-4.  Kategória: **Integration**, majd **ADD**.
-5.  Töltsd le és **indítsd újra a Home Assistant-ot**.
-
-### 3. Az integráció konfigurálása (UI Setup)
-1.  **Settings** -> **Devices & Services** -> **ADD INTEGRATION**.
-2.  Keress rá: `Smart Grid Yield Simulator`.
-3.  Válaszd ki a fázisok számát (1 fázis, 3 fázis aggregált vagy L1/L2/L3 külön).
-4.  Add meg a kért entitásokat (Nord Pool, Fixer API, Watt és kWh szenzorok).
+* **Dinamikus Árkezelés:** A Nord Pool EUR/MWh adatait a Fixer.io árfolyamán azonnal Ft/kWh-ra konvertálja.
+* **Regionális Optimalizáció:** Mivel a Nord Pool jelenleg nem közöl natív magyar árakat, a rendszer az **osztrák (AT)** piaci adatokat használja, amely a piaci összefonódás miatt reprezentatív a magyar viszonyokra is.
+* **Intelligens Tőzsdei Tanácsadó:** Javaslatot tesz az akkumulátor használatára a beállított **biztonsági tartalék (kWh)** szint figyelembevételével.
+* **Inverter Hatékonyság:** Az inverter saját belső veszteség-szenzorának (W) támogatása.
 
 ---
 
-## Dashboard Kártya Példa (YAML)
+## 🛠️ Szükséges entitások a beüzemeléshez
 
-Másold be egy `Manual` kártyába. A `#` jellel jelölt sorokat cseréld ki a saját invertered entitásaira!
+### 1. Előfeltételek és Nord Pool konfiguráció
+Az integráció telepítése előtt győződj meg róla, hogy a **Nord Pool** integrációban az **osztrák régiót** állítottad be:
+* **Region:** `AT`
+* **Currency:** `EUR`
+
+### 2. Árfolyam figyelés (Kötelező beállítás!)
+Az integráció működéséhez szükséged van egy aktuális EUR/HUF árfolyam szenzorra. Ezt a `configuration.yaml` fájlba kell manuálisan beillesztened. 
+
+**FIGYELEM:** Az `access_key=` után a saját, [fixer.io](https://fixer.io/) oldalon regisztrált API kulcsodat írd be! A `scan_interval` értékét (8 óra) ne csökkentsd, mert az ingyenes Fixer.io csomag korlátozott számú lekérdezést engedélyez.
+
+```yaml
+sensor:
+  - platform: rest
+    name: "Euro Arfolyam"
+    # CSERÉLD KI AZ ALÁBBI KULCSOT A SAJÁTADRA:
+    resource: "[http://data.fixer.io/api/latest?access_key=IDE_IRD_A_SAJAT_API_KULCSODAT&symbols=HUF,EUR](http://data.fixer.io/api/latest?access_key=IDE_IRD_A_SAJAT_API_KULCSODAT&symbols=HUF,EUR)"
+    value_template: "{{ (value_json.rates.HUF / value_json.rates.EUR) | round(2) }}"
+    unit_of_measurement: "Ft/EUR"
+    scan_interval: 28800 # 8 óránként (Ne állítsd kisebbre az ingyenes verziólimit miatt!)
+    force_update: true
+```
+
+---
+
+## 🛠️ Az Integráció telepítése
+
+Válassz az alábbi két módszer közül a telepítéshez:
+
+### **"A" módszer: HACS használatával (Ajánlott)**
+1. Nyisd meg a **HACS** felületét a Home Assistantban.
+2. Kattints a jobb felső sarokban a **három pontra** (menü), majd válaszd a **Custom repositories** opciót.
+3. Másold be ennek a GitHub repónak az URL-jét a *Repository* mezőbe.
+4. A *Category* listából válaszd ki az **Integration** opciót, majd kattints az **Add** gombra.
+5. Keresd meg a listában megjelenő **Smart Grid Yield Simulator**-t, és kattints a **Download** gombra.
+6. **Fontos:** Indítsd újra a Home Assistant-ot!
 
 
+
+### **"B" módszer: Manuális telepítés**
+1. Töltsd le a forráskódot (**ZIP** formátumban vagy `git clone` használatával).
+2. Keresd meg a `custom_components` mappát a Home Assistant konfigurációs könyvtáradban (ahol a `configuration.yaml` is található).
+3. Másold be ide a `smart_grid_yield` mappát az összes tartalmával együtt.
+4. **Fontos:** Indítsd újra a Home Assistant-ot!
+
+---
+
+### ⚙️ Konfigurálás a felhasználói felületen
+
+Miután újraindult a rendszer, az integrációt aktiválnod kell a felületen:
+
+1. Menj a **Beállítások** -> **Eszközök és szolgáltatások** menüpontba.
+2. Kattints az **Integráció hozzáadása** gombra a jobb alsó sarokban.
+3. Keress rá a listában: **Smart Grid Yield Simulator**.
+4. A megjelenő ablakban add meg a kért adatokat:
+    * Fázisok száma és mérési mód.
+    * Nord Pool szenzor kiválasztása.
+    * Fogyasztásmérő és egyéb technikai szenzorok társítása.
+  
+---
+
+### Konfigurációs táblázat
+
+| Kategória | Mező | Leírás |
+| :--- | :--- | :--- |
+| **Pénzügy** | Fixer.io API Key | Az EUR/HUF váltáshoz szükséges API kulcs. |
+| **Tőzsde** | Nord Pool Spot Price | Az osztrák (AT) régióra állított EUR/MWh szenzor. |
+| **Fogyasztás** | Household Load (W) | A ház aktuális pillanatnyi fogyasztása (W). |
+| **Hálózat** | Grid Power (W) | Hálózati teljesítmény (1 vagy 3 fázis konfiguráció szerint). |
+| **Energia** | Daily Import/Export (kWh) | Napi hálózati forgalom számlálók. |
+| **Akku** | Battery SOC (%) | Az akkumulátor aktuális töltöttsége. |
+| **Veszteség** | Inverter Loss (W) | Az inverter belső veszteség-szenzora. |
+
+---
+
+## 📊 Létrehozott entitások (Kimenetek)
+
+A telepítés után az integráció az alábbi szenzorokat hozza létre automatikusan:
+
+| Szenzor neve | Entitás azonosító | Leírás |
+| :--- | :--- | :--- |
+| **Dinamikus Bruttó Áramár** | `sensor.dinamikus_brutto_aramar` | Aktuális piaci ár Ft/kWh-ban (ÁFA + RHD). |
+| **Megtakarítási Sebesség** | `sensor.pillanatnyi_megtakaritasi_sebesseg` | Pillanatnyi pénzügyi hozam Ft/óra egységben. |
+| **Tőzsdei Tanácsadó** | `sensor.tozsdei_tanacsado` | Szöveges javaslat és akku tartalék információ. |
+| **Elméleti Nyereség** | `sensor.elmeleti_nyereseg_merteke` | A 70.1 Ft és a piaci ár aktuális különbsége. |
+| **Napi Valós Nyereség** | `sensor.napi_valos_nyereseg` | Ma elért összes megtakarítás Ft-ban. |
+| **Havi Valós Nyereség** | `sensor.havi_valos_nyereseg` | Aktuális havi megtakarítás Ft-ban. |
+| **Inverter Veszteség** | `sensor.rendszer_pillanatnyi_vesztesege` | Az inverter által jelentett pillanatnyi veszteség (W). |
+| **Euro Árfolyam** | `sensor.euro_arfolyam` | A Fixer.io-tól lekért aktuális HUF/EUR váltószám. |
+
+---
+
+## 🧮 Matematikai alapok és számítási metodika
+
+A rendszer célja, hogy az osztrák tőzsdei nyers adatból egy olyan bruttó végfelhasználói árat képezzen, amely összehasonlítható a magyarországi lakossági rezsiárral.
+
+
+
+### 1. Bruttó áramár számítása (Ft/kWh)
+$$\text{Bruttó ár} = \left( \frac{\text{NordPool (AT)}_{EUR/MWh} \times \text{Fixer}_{HUF/EUR}}{1000} \times 1.27 \right) + 25$$
+
+* **Osztrák árak:** Mivel a magyar (HUPX) és az osztrák (EXAA/NordPool AT) árak korrelációja rendkívül magas, a számítás alapja az osztrák piaci ár.
+* **Deviza váltás:** EUR/MWh -> HUF/MWh (Fixer.io árfolyam).
+* **Mértékegység váltás:** HUF/MWh -> HUF/kWh (osztás 1000-rel).
+* **Adók és Díjak:** 27% ÁFA és 25 Ft/kWh fix Rendszerhasználati Díj.
+
+### 2. Pillanatnyi megtakarítás (Ft/h)
+A megtakarítási sebesség számítása figyelembe veszi a napelem által kiváltott vásárlást és az esetleges hálózati exportot is:
+* **Önfogyasztás:** Minden kWh, amit nem a hálózatból veszünk meg, **70.1 Ft** megtakarítást termel.
+* **Export:** Ha a piaci ár alacsonyabb mint 70.1 Ft, az exportált energia értéke a rezsiár és a piaci ár különbségeként jelenik meg a szimulációban.
+
+---
+
+## 📱 Dashboard kártya minta (YAML)
+
+Másold be egy `Manual` kártyába a Home Assistant dashboardon. 
+**FIGYELEM:** A `#` jelek közötti részeket manuálisan kell átírnod a saját entitásaid neveire!
 
 ```yaml
 type: vertical-stack
@@ -49,31 +138,27 @@ cards:
   - type: horizontal-stack
     cards:
       - type: gauge
-        entity: sensor.dinamikus_brutto_aramar
+        entity: sensor.dinamikus_brutto_aramar # Az integráció hozza létre
         name: Bruttó Ár
         min: 0
         max: 120
-        severity:
-          green: 0
-          yellow: 60
-          red: 70.1
+        severity: {green: 0, yellow: 60, red: 70.1}
         needle: true
       - type: gauge
-        entity: #sensor.inverter_load_power#
+        # === MANUÁLISAN CSERÉLD KI: A ház fogyasztás szenzorodra ===
+        entity: #sensor.haz_pillanatnyi_fogyasztas# 
         name: Ház
         unit: W
         min: 0
         max: 5000
       - type: gauge
-        entity: #sensor.inverter_battery_soc#
+        # === MANUÁLISAN CSERÉLD KI: Az akkumulátor töltöttség szenzorodra ===
+        entity: #sensor.akku_soc_szazalek# 
         name: Akku
         unit: "%"
         min: 0
         max: 100
-        severity:
-          red: 0
-          yellow: 20
-          green: 45
+        severity: {red: 0, yellow: 20, green: 45}
         needle: true
   - type: entities
     title: Mai Energia Forgalom
@@ -81,22 +166,22 @@ cards:
     entities:
       - type: section
         label: Pillanatnyi Hálózat (W)
-      # VÁLASZD A MEGFELELŐT A TELEPÍTÉS SZERINT:
-      - entity: #sensor.grid_total_power# # Ha aggregált/1 fázisú
+      # === MANUÁLISAN CSERÉLD KI: A hálózati mérőd (Smart Meter) wattos szenzorára ===
+      - entity: #sensor.halozati_teljesitmeny_osszesen# 
         name: Hálózat összesen
-      # - entity: #sensor.grid_l1# # Ha fázisonkénti (L1, L2, L3)
-      # - entity: #sensor.grid_l2#
-      # - entity: #sensor.grid_l3#
       - type: section
         label: Napi Statisztika (kWh)
-      - entity: #sensor.inverter_today_energy_import#
+      # === MANUÁLISAN CSERÉLD KI: A napi hálózati import (vétel) szenzorodra ===
+      - entity: #sensor.napi_halozati_import# 
         name: Hálózatról vett
-      - entity: #sensor.inverter_today_energy_export#
+      # === MANUÁLISAN CSERÉLD KI: A napi hálózati export (eladás) szenzorodra ===
+      - entity: #sensor.napi_halozati_export# 
         name: Hálózatba eladott
-      - entity: #sensor.inverter_today_production#
+      # === MANUÁLISAN CSERÉLD KI: A napi napelem termelés szenzorodra ===
+      - entity: #sensor.napelem_napi_termeles# 
         name: Napelem mai termelés
-      - entity: sensor.rendszer_pillanatnyi_vesztesege
-        name: Inverter belső veszteség (W)
+      - entity: sensor.rendszer_pillanatnyi_vesztesege # Az integráció hozza létre
+        name: Inverter belső veszteség
         icon: mdi:leak
   - type: entities
     title: Pénzügyi Szimuláció
@@ -115,19 +200,6 @@ cards:
       - entity: sensor.evi_valos_nyereseg
         name: Ebben az évben Ft
 ```
-
-### Árkalkuláció (HUF/kWh):
-
-A képlet biztosítja, hogy minden tag azonos mértékegységben (**Ft/kWh**) szerepeljen:
-
-$$\text{Bruttó ár} = \left( \frac{\text{Spot}_{EUR/MWh} \times \text{Árfolyam}_{HUF/EUR}}{1000} \times 1.27 \right) + 25$$
-
-| Tag | Jelentés | Egység |
-| :--- | :--- | :--- |
-| **Spot** | Nord Pool piaci ár | EUR/MWh |
-| **1000** | MWh -> kWh váltószám | - |
-| **1.27** | ÁFA (27%) | - |
-| **25** | Rendszerhasználati díj | Ft/kWh |
 
 ## Licenc
 MIT
