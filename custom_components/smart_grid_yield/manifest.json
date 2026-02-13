@@ -1,11 +1,9 @@
 {
   "domain": "smart_grid_yield",
   "name": "Smart Grid Yield Simulator",
-  "documentation": "https://github.com/karolyia79/smart-grid-yield-simulator",
-  "issue_tracker": "https://github.com/karolyia79/smart-grid-yield-simulator/issues",
-  "dependencies": ["nordpool"],
   "codeowners": ["@karolyia79"],
   "config_flow": true,
-  "iot_class": "cloud_polling",
-  "version": "1.0.0"
+  "dependencies": ["integration", "utility_meter"],
+  "version": "1.0.0",
+  "iot_class": "local_polling"
 }
