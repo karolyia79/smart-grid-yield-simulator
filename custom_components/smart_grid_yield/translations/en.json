@@ -2,34 +2,39 @@
   "config": {
     "step": {
       "user": {
-        "title": "SGY System Type",
-        "description": "Select your grid connection type and provide your Fixer.io API key for currency conversion.",
+        "title": "SGY Simulator - System Type",
+        "description": "Select your solar system's measurement mode.",
         "data": {
-          "phase_setting": "Phase Configuration",
-          "fixer_api_key": "Fixer.io API Key"
+          "phase_setting": "Phase Management"
         }
       },
       "sensors": {
-        "title": "Configure Sensors",
-        "description": "Please select the sensors for the simulator. Power values should be in Watts (W), energy values in kWh.",
+        "title": "Sensor Mapping",
+        "description": "Provide the source sensors for calculations. For the exchange rate, use an MNB or a fixed EUR/HUF sensor.",
         "data": {
-          "spot_price_sensor": "Nord Pool Price (EUR/MWh)",
-          "load_power_sensor": "Household Load (W)",
+          "exchange_rate_sensor": "EUR/HUF Exchange Rate sensor",
+          "spot_price_sensor": "Spot Price sensor (EUR/MWh)",
+          "load_power_sensor": "House Load (W)",
           "pv_power_sensor": "PV Production (W)",
-          "total_loss_sensor": "Inverter Efficiency Loss (W)",
-          "batt_charge_sensor": "Battery Charge (W)",
-          "batt_discharge_sensor": "Battery Discharge (W)",
-          "grid_power_sensor": "Grid Total (W)",
-          "grid_l1_sensor": "Phase L1 (W)",
-          "grid_l2_sensor": "Phase L2 (W)",
-          "grid_l3_sensor": "Phase L3 (W)",
+          "total_loss_sensor": "System Loss (W)",
+          "batt_charge_sensor": "Battery Charging (W)",
+          "batt_discharge_sensor": "Battery Discharging (W)",
+          "grid_power_sensor": "Grid Power (W)",
+          "grid_l1_sensor": "Grid L1 (W)",
+          "grid_l2_sensor": "Grid L2 (W)",
+          "grid_l3_sensor": "Grid L3 (W)",
           "daily_import_sensor": "Daily Import (kWh)",
           "daily_export_sensor": "Daily Export (kWh)",
           "battery_soc_sensor": "Battery SOC (%)",
           "battery_capacity": "Battery Capacity (kWh)",
-          "battery_reserve": "Safety Reserve (kWh)"
+          "battery_reserve": "Battery Reserve (kWh)"
         }
       }
+    },
+    "error": {
+      "cannot_connect": "Connection failed",
+      "invalid_auth": "Invalid authentication",
+      "unknown": "Unexpected error occurred"
     }
   }
 }
