@@ -3,6 +3,7 @@
     "step": {
       "user": {
         "title": "SGY System Type",
+        "description": "Select your grid connection type and provide your Fixer.io API key for currency conversion.",
         "data": {
           "phase_setting": "Phase Configuration",
           "fixer_api_key": "Fixer.io API Key"
@@ -10,6 +11,7 @@
       },
       "sensors": {
         "title": "Configure Sensors",
+        "description": "Please select the sensors for the simulator. Power values should be in Watts (W), energy values in kWh.",
         "data": {
           "spot_price_sensor": "Nord Pool Price (EUR/MWh)",
           "load_power_sensor": "Household Load (W)",
