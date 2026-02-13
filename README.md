@@ -2,7 +2,7 @@
 
 
 
-Ez egy Home Assistant egyedi integráció, amelyet kifejezetten a magyarországi napelemes (hibrid vagy szigetüzemű) rendszerekhez fejlesztettünk. Az integráció segít kiszámolni a valós pénzügyi megtakarítást a dinamikus tőzsdei áramárak és a rögzített rezsiárak (70.1 Ft/kWh) összevetésével.
+Ez egy Home Assistant egyedi integráció, amelyet kifejezetten a magyarországi napelemes (hibrid vagy szigetüzemű) rendszerekhez készült hobby projekt. Az integráció segít kiszámolni a valós pénzügyi megtakarítást a dinamikus tőzsdei áramárak és a rögzített rezsiárak (70.1 Ft/kWh) összevetésével.
 
 ## 🚀 Főbb funkciók
 
@@ -201,5 +201,15 @@ cards:
         name: Ebben az évben Ft
 ```
 
-## Licenc
-MIT
+---
+
+## 📄 Licenc
+
+Copyright (c) 2026 karolyia79
+
+Ez a szoftver az **MIT Licenc** feltételei szerint használható fel.
+
+A licenc értelmében bárki számára engedélyezett a szoftver másolatainak és a kapcsolódó dokumentációnak a használata, másolása, módosítása, egyesítése, közzététele, terjesztése, al-licencbe adása és/vagy értékesítése, az alábbi feltételekkel:
+
+* Az eredeti szerzői jogi nyilatkozatot és ezt az engedélyt bele kell foglalni a szoftver minden másolatába vagy jelentős részébe.
+* **A SZOFTVER ÚGY VAN ÁTADVA, AHOGY VAN (AS IS)**, bármiféle garancia nélkül, legyen az kifejezett vagy hallgatólagos. A szerző(k) semmilyen esetben sem vonhatók felelősségre semmilyen követelésért, kárért vagy egyéb felelősségért.
