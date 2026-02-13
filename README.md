@@ -30,7 +30,7 @@ sensor:
   - platform: rest
     name: "Euro Arfolyam"
     # CSERÉLD KI AZ ALÁBBI KULCSOT A SAJÁTADRA:
-    resource: "[http://data.fixer.io/api/latest?access_key=IDE_IRD_A_SAJAT_API_KULCSODAT&symbols=HUF,EUR](http://data.fixer.io/api/latest?access_key=IDE_IRD_A_SAJAT_API_KULCSODAT&symbols=HUF,EUR)"
+    resource: "http://data.fixer.io/api/latest?access_key=IDE_IRD_A_SAJAT_API_KULCSODAT&symbols=HUF,EUR"
     value_template: "{{ (value_json.rates.HUF / value_json.rates.EUR) | round(2) }}"
     unit_of_measurement: "Ft/EUR"
     scan_interval: 28800 # 8 óránként (Ne állítsd kisebbre az ingyenes verziólimit miatt!)
