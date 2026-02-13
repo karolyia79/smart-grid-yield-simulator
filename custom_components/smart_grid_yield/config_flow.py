@@ -8,12 +8,12 @@ class SGYFlow(config_entries.ConfigFlow, domain=DOMAIN):
     VERSION = 1
 
     def __init__(self):
-        """Inicializálás - osztályszintű tárolóval."""
+        """Inicializálás."""
         super().__init__()
         self._init_data = {}
 
     async def async_step_user(self, user_input=None):
-        """Első lépés: Rendszer típusa és API kulcs."""
+        """Első lépés: Rendszer típusa kiválasztása."""
         if user_input is not None:
             self._init_data.update(user_input)
             return await self.async_step_sensors()
@@ -31,7 +31,6 @@ class SGYFlow(config_entries.ConfigFlow, domain=DOMAIN):
                         mode=selector.SelectSelectorMode.DROPDOWN
                     )
                 ),
-                vol.Required(CONF_FIXER_API_KEY): selector.TextSelector(),
             })
         )
 
@@ -41,7 +40,12 @@ class SGYFlow(config_entries.ConfigFlow, domain=DOMAIN):
             full_data = {**self._init_data, **user_input}
             return self.async_create_entry(title="Smart Grid Yield", data=full_data)
 
+        # Mezők összeállítása
         fields = {
+            # Bekérjük az árfolyam szenzort az API kulcs helyett
+            vol.Required("exchange_rate_sensor"): selector.EntitySelector(
+                selector.EntitySelectorConfig(domain="sensor", device_class="monetary")
+            ),
             vol.Required(CONF_SPOT_PRICE): selector.EntitySelector(selector.EntitySelectorConfig(domain="sensor")),
             vol.Required(CONF_LOAD_POWER): selector.EntitySelector(selector.EntitySelectorConfig(domain="sensor")),
             vol.Optional(CONF_PV_POWER): selector.EntitySelector(selector.EntitySelectorConfig(domain="sensor")),
@@ -50,6 +54,7 @@ class SGYFlow(config_entries.ConfigFlow, domain=DOMAIN):
             vol.Optional(CONF_BATT_DISCHARGE): selector.EntitySelector(selector.EntitySelectorConfig(domain="sensor")),
         }
 
+        # Fázis-specifikus mezők
         if self._init_data.get(CONF_PHASE_SETTING) == PHASE_3_INDIVIDUAL:
             fields[vol.Required(CONF_GRID_L1)] = selector.EntitySelector(selector.EntitySelectorConfig(domain="sensor"))
             fields[vol.Required(CONF_GRID_L2)] = selector.EntitySelector(selector.EntitySelectorConfig(domain="sensor"))
