@@ -2,7 +2,7 @@
 
 
 
-Ez egy Home Assistant egyedi integráció, amelyet kifejezetten a magyarországi napelemes (hibrid vagy szigetüzemű) rendszerekhez készült hobby projekt. Az integráció segít kiszámolni a valós pénzügyi megtakarítást a dinamikus tőzsdei áramárak és a rögzített rezsiárak (70.1 Ft/kWh) összevetésével.
+Ez egy Home Assistant egyedi integráció, ami egy kifejezetten a magyarországi napelemes (hibrid vagy szigetüzemű) rendszerekhez készült hobby projekt. Az integráció segít kiszámolni a valós pénzügyi megtakarítást a dinamikus tőzsdei áramárak és a rögzített rezsiárak (70.1 Ft/kWh) összevetésével.
 
 ## 🚀 Főbb funkciók
 
