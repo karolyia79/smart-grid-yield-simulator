@@ -4,6 +4,7 @@
   "codeowners": ["@karolyia79"],
   "config_flow": true,
   "dependencies": ["integration", "utility_meter"],
-  "version": "1.0.0",
-  "iot_class": "local_polling"
+  "version": "1.0.1",
+  "iot_class": "local_polling",
+  "documentation": "https://github.com/karolyia79/smart-grid-yield-simulator"
 }
