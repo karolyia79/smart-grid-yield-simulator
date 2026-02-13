@@ -203,13 +203,15 @@ cards:
 
 ---
 
-## 📄 Licenc
+## 📄 Licenc / License
 
-Copyright (c) 2026 karolyia79
+Ez a projekt az **MIT Licenc** alatt áll. / This project is licensed under the **MIT License**.
 
-Ez a szoftver az **MIT Licenc** feltételei szerint használható fel.
+### Magyar nyelvű összefoglaló (nem helyettesíti az eredeti licencet):
+A szoftver szabadon felhasználható, másolható és módosítható, az alábbi feltételekkel:
+* Az eredeti szerzői jogi nyilatkozatot és a licenc szövegét minden másolatban fel kell tüntetni.
+* **Felelősségkizárás:** A szoftverért semmilyen garanciát nem vállalok. A használatból eredő esetleges károkért (pl. hibás számítások, rendszerleállás) a fejlesztő nem vonható felelősségre. Mindenki saját felelősségére használja!
 
-A licenc értelmében bárki számára engedélyezett a szoftver másolatainak és a kapcsolódó dokumentációnak a használata, másolása, módosítása, egyesítése, közzététele, terjesztése, al-licencbe adása és/vagy értékesítése, az alábbi feltételekkel:
-
-* Az eredeti szerzői jogi nyilatkozatot és ezt az engedélyt bele kell foglalni a szoftver minden másolatába vagy jelentős részébe.
-* **A SZOFTVER ÚGY VAN ÁTADVA, AHOGY VAN (AS IS)**, bármiféle garancia nélkül, legyen az kifejezett vagy hallgatólagos. A szerző(k) semmilyen esetben sem vonhatók felelősségre semmilyen követelésért, kárért vagy egyéb felelősségért.
+---
+### English Summary:
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files, to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, provided that the copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
