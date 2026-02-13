@@ -42,9 +42,9 @@ class SGYFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
         # Mezők összeállítása
         fields = {
-            # Bekérjük az árfolyam szenzort az API kulcs helyett
-            vol.Required("exchange_rate_sensor"): selector.EntitySelector(
-                selector.EntitySelectorConfig(domain="sensor", device_class="monetary")
+            # Kivettük a device_class="monetary" szűrést, hogy látszódjon a REST szenzor is
+            vol.Required(CONF_EXCHANGE_RATE_SENSOR): selector.EntitySelector(
+                selector.EntitySelectorConfig(domain="sensor")
             ),
             vol.Required(CONF_SPOT_PRICE): selector.EntitySelector(selector.EntitySelectorConfig(domain="sensor")),
             vol.Required(CONF_LOAD_POWER): selector.EntitySelector(selector.EntitySelectorConfig(domain="sensor")),
