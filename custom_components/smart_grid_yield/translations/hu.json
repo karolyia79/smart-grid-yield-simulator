@@ -2,32 +2,39 @@
   "config": {
     "step": {
       "user": {
-        "title": "SGY Rendszer Típusa",
+        "title": "SGY Szimulátor - Rendszer típusa",
+        "description": "Válaszd ki a napelemes rendszered mérési módját.",
         "data": {
-          "phase_setting": "Fázis konfiguráció",
-          "fixer_api_key": "Fixer.io API Kulcs"
+          "phase_setting": "Fázisok kezelése"
         }
       },
       "sensors": {
-        "title": "Szenzorok Beállítása",
+        "title": "Szenzorok hozzárendelése",
+        "description": "Add meg a számításhoz szükséges forrásokat. Az árfolyamhoz használj egy MNB vagy fix EUR/HUF szenzort.",
         "data": {
-          "spot_price_sensor": "Tőzsdei ár (EUR/MWh)",
-          "load_power_sensor": "Ház fogyasztása (W)",
+          "exchange_rate_sensor": "EUR/HUF Árfolyam szenzor",
+          "spot_price_sensor": "Tőzsdei ár szenzor (EUR/MWh)",
+          "load_power_sensor": "Ház fogyasztás (W)",
           "pv_power_sensor": "Napelem termelés (W)",
-          "total_loss_sensor": "Inverter hatásfok veszteség (W)",
+          "total_loss_sensor": "Rendszer veszteség (W)",
           "batt_charge_sensor": "Akku töltés (W)",
           "batt_discharge_sensor": "Akku kisütés (W)",
-          "grid_power_sensor": "Hálózat összesen (W)",
-          "grid_l1_sensor": "L1 fázis (W)",
-          "grid_l2_sensor": "L2 fázis (W)",
-          "grid_l3_sensor": "L3 fázis (W)",
-          "daily_import_sensor": "Napi vétel (kWh)",
-          "daily_export_sensor": "Napi betáplálás (kWh)",
+          "grid_power_sensor": "Hálózati teljesítmény (W)",
+          "grid_l1_sensor": "Hálózat L1 (W)",
+          "grid_l2_sensor": "Hálózat L2 (W)",
+          "grid_l3_sensor": "Hálózat L3 (W)",
+          "daily_import_sensor": "Napi import (kWh)",
+          "daily_export_sensor": "Napi export (kWh)",
           "battery_soc_sensor": "Akku töltöttség (%)",
           "battery_capacity": "Akku kapacitás (kWh)",
-          "battery_reserve": "Biztonsági tartalék (kWh)"
+          "battery_reserve": "Akku tartalék (kWh)"
         }
       }
+    },
+    "error": {
+      "cannot_connect": "Sikertelen kapcsolódás",
+      "invalid_auth": "Hibás hitelesítés",
+      "unknown": "Váratlan hiba történt"
     }
   }
 }
