@@ -2,28 +2,28 @@
   "config": {
     "step": {
       "user": {
-        "title": "SGY Rendszer Típus",
+        "title": "SGY Rendszer Típusa",
         "data": {
           "phase_setting": "Fázis konfiguráció",
           "fixer_api_key": "Fixer.io API Kulcs"
         }
       },
       "sensors": {
-        "title": "Szenzorok megadása",
+        "title": "Szenzorok Beállítása",
         "data": {
-          "spot_price_sensor": "Nord Pool Ár (EUR/MWh)",
-          "load_power_sensor": "Ház fogyasztás (W)",
-          "pv_power_sensor": "PV Termelés (W)",
-          "total_loss_sensor": "Inverter belső veszteség (W)",
-          "batt_charge_sensor": "Akku Töltés (W)",
-          "batt_discharge_sensor": "Akku Kisütés (W)",
+          "spot_price_sensor": "Tőzsdei ár (EUR/MWh)",
+          "load_power_sensor": "Ház fogyasztása (W)",
+          "pv_power_sensor": "Napelem termelés (W)",
+          "total_loss_sensor": "Inverter hatásfok veszteség (W)",
+          "batt_charge_sensor": "Akku töltés (W)",
+          "batt_discharge_sensor": "Akku kisütés (W)",
           "grid_power_sensor": "Hálózat összesen (W)",
-          "grid_l1_sensor": "L1 Fázis (W)",
-          "grid_l2_sensor": "L2 Fázis (W)",
-          "grid_l3_sensor": "L3 Fázis (W)",
-          "daily_import_sensor": "Napi import (kWh)",
-          "daily_export_sensor": "Napi export (kWh)",
-          "battery_soc_sensor": "Akku SOC (%)",
+          "grid_l1_sensor": "L1 fázis (W)",
+          "grid_l2_sensor": "L2 fázis (W)",
+          "grid_l3_sensor": "L3 fázis (W)",
+          "daily_import_sensor": "Napi vétel (kWh)",
+          "daily_export_sensor": "Napi betáplálás (kWh)",
+          "battery_soc_sensor": "Akku töltöttség (%)",
           "battery_capacity": "Akku kapacitás (kWh)",
           "battery_reserve": "Biztonsági tartalék (kWh)"
         }
