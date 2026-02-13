@@ -46,7 +46,7 @@ Válassz az alábbi két módszer közül a telepítéshez:
 ### **"A" módszer: HACS használatával (Ajánlott)**
 1. Nyisd meg a **HACS** felületét a Home Assistantban.
 2. Kattints a jobb felső sarokban a **három pontra** (menü), majd válaszd a **Custom repositories** opciót.
-3. Másold be ennek a GitHub repónak az URL-jét a *Repository* mezőbe.
+3. Másold be ennek a repónak az URL-jét a *Repository* mezőbe. (https://github.com/karolyia79/smart-grid-yield-simulator)
 4. A *Category* listából válaszd ki az **Integration** opciót, majd kattints az **Add** gombra.
 5. Keresd meg a listában megjelenő **Smart Grid Yield Simulator**-t, és kattints a **Download** gombra.
 6. **Fontos:** Indítsd újra a Home Assistant-ot!
